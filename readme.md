@@ -6,12 +6,13 @@ Useful for when you want something special to happen when DevTools is open, like
 
 **Note:** This package may have false-positives due to browser changes and limitations.
 
-## [Demo](cdn.nosferk.com/gh/forks/virk/devtools-detect/index.html)
+## [Demo](https://cdn.nosferk.com/gh/forks/virk/devtools-detect/index.html)
+[Link](https://cdn.nosferk.com/gh/forks/virk/devtools-detect/index.html)(https://cdn.nosferk.com/gh/forks/virk/devtools-detect/index.html)
 
 ## Usage
 
 ```html
-<script src="cdn.nosferk.com/gh/forks/virk/devtools-detect/index.js"></script>
+<script src="https://cdn.nosferk.com/gh/forks/virk/devtools-detect/index.js"></script>
 <script>
     // Check if DevTools is open
     console.log('Is DevTools open:', window.devtools.isOpen);
