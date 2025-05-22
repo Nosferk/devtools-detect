@@ -1,4 +1,4 @@
-# devtools-detect (Virk fork)
+# devtools-detect (Virk fork of ["devtools-detect"](https://github.com/sindresorhus/devtools-detect))
 
 > Detect if DevTools is open and its orientation (including responsive mode or separate window)
 
@@ -9,10 +9,6 @@ Useful for when you want something special to happen when DevTools is open, like
 ## [Demo](cdn.nosferk.com/gh/forks/virk/devtools-detect/index.html)
 
 ## Install
-
-```sh
-npm install devtools-detect
-```
 
 ## Usage
 
