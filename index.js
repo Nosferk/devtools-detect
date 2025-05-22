@@ -1,52 +1,74 @@
-/*!
-devtools-detect
-https://github.com/sindresorhus/devtools-detect
-By Sindre Sorhus
-MIT License
+/*! 
+  devtools-detect (Virk fork)
+  Detect if DevTools is open (inclusive em modo responsivo ou em janela separada)
+  MIT License
 */
+(function () {
+    'use strict';
 
-const devtools = {
-	isOpen: false,
-	orientation: undefined,
-};
+    const devtools = {
+        isOpen: false,
+        orientation: undefined
+    };
 
-const threshold = 170;
+    const defaultOptions = {
+        sizeThreshold: 160,
+        debugThreshold: 100,
+        pollInterval: 500
+    };
 
-const emitEvent = (isOpen, orientation) => {
-	globalThis.dispatchEvent(new globalThis.CustomEvent('devtoolschange', {
-		detail: {
-			isOpen,
-			orientation,
-		},
-	}));
-};
+    const emitEvent = (isOpen, orientation) => {
+        window.dispatchEvent(new CustomEvent('devtoolschange', {
+            detail: { isOpen, orientation }
+        }));
+    };
 
-const main = ({emitEvents = true} = {}) => {
-	const widthThreshold = globalThis.outerWidth - globalThis.innerWidth > threshold;
-	const heightThreshold = globalThis.outerHeight - globalThis.innerHeight > threshold;
-	const orientation = widthThreshold ? 'vertical' : 'horizontal';
+    function detectByDebugger(debugThreshold) {
+        const t0 = performance.now();
+        debugger;
+        const t1 = performance.now();
+        return (t1 - t0) > debugThreshold;
+    }
 
-	if (
-		!(heightThreshold && widthThreshold)
-		&& ((globalThis.Firebug && globalThis.Firebug.chrome && globalThis.Firebug.chrome.isInitialized) || widthThreshold || heightThreshold)
-	) {
-		if ((!devtools.isOpen || devtools.orientation !== orientation) && emitEvents) {
-			emitEvent(true, orientation);
-		}
+    function detect({ sizeThreshold, debugThreshold, emitEvents }) {
+        const widthDiff = window.outerWidth - window.innerWidth;
+        const heightDiff = window.outerHeight - window.innerHeight;
+        const bySize = widthDiff > sizeThreshold || heightDiff > sizeThreshold;
 
-		devtools.isOpen = true;
-		devtools.orientation = orientation;
-	} else {
-		if (devtools.isOpen && emitEvents) {
-			emitEvent(false, undefined);
-		}
+        let orientation;
+        if (bySize) {
+            orientation = (widthDiff > sizeThreshold) ? 'vertical' : 'horizontal';
+        } else {
+            orientation = undefined;
+        }
 
-		devtools.isOpen = false;
-		devtools.orientation = undefined;
-	}
-};
+        const byDebug = detectByDebugger(debugThreshold);
 
-main({emitEvents: false});
-setInterval(main, 500);
+        const isOpenNow = bySize || byDebug;
 
-export default devtools;
+        if (isOpenNow) {
+            if ((!devtools.isOpen || devtools.orientation !== orientation) && emitEvents) {
+                emitEvent(true, orientation);
+            }
+            devtools.isOpen = true;
+            devtools.orientation = orientation;
+        } else {
+            if (devtools.isOpen && emitEvents) {
+                emitEvent(false, undefined);
+            }
+            devtools.isOpen = false;
+            devtools.orientation = undefined;
+        }
+    }
+
+    (function loop(opts) {
+        detect(opts);
+        window.requestAnimationFrame(() => loop(opts));
+    })(Object.assign({ emitEvents: true }, defaultOptions)); // Fix: emitEvents should be true for UI updates
+
+    if (typeof module !== 'undefined' && module.exports) {
+        module.exports = devtools;
+    } else {
+        window.devtools = devtools;
+    }
+})();
