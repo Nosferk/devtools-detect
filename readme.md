@@ -8,8 +8,6 @@ Useful for when you want something special to happen when DevTools is open, like
 
 ## [Demo](cdn.nosferk.com/gh/forks/virk/devtools-detect/index.html)
 
-## Install
-
 ## Usage
 
 ```html
