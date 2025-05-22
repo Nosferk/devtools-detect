@@ -12,7 +12,7 @@ Useful for when you want something special to happen when DevTools is open, like
 ## Usage
 
 ```html
-<script src="https://cdn.nosferk.com/gh/forks/virk/devtools-detect/index.js"></script>
+<script src="https://cdn.nosferk.com/p/nosferk/devtools-detect/index.js"></script>
 <script>
     // Check if DevTools is open
     console.log('Is DevTools open:', window.devtools.isOpen);
